@@ -1,10 +1,15 @@
 import tkinter as tk
+from .reg_file import RegFile
+from .memory import Memory
 
 NUM_OF_ROWS = 14
 NUM_OF_COLUMNS = 10
 
 class ProgSysGUI:
     def __init__(self) -> None:
+        self._reg_file = RegFile()
+        self._memory = Memory()
+
         # Create the main window
         self.tk_gui = tk.Tk()
 
@@ -43,19 +48,16 @@ class ProgSysGUI:
         )
         state_register_title_label.grid(row=1, column=0, columnspan=4, sticky="NSEW")
 
-        self.state_reg_vars = []
         for i in range(32):
-            reg_string_var = tk.StringVar()
-            reg_string_var.set(f'r{i}: 0x00000000')
             label = tk.Label(self.tk_gui,
-                textvariable=reg_string_var,
+                text=f'r{i}: 0x00000000',
                 fg=fg_color,
                 bg=bg_color,
                 justify='left',
                 font=("TkDefaultFont", 10, "normal")
             )
             label.grid(row= i % 8 + 2, column= i // 8, sticky="NSEW")
-            self.state_reg_vars.append(reg_string_var)
+            label.after(10, lambda label=label, i=i: self._reg_update_callback(label, i))
         
         # Create indicators
         state_indicators_title_label = tk.Label(self.tk_gui,
@@ -223,3 +225,8 @@ class ProgSysGUI:
 
     def stop(self) -> None:
         self.tk_gui.destroy()
+
+    def _reg_update_callback(self, label, i):
+        value = self._reg_file[i];
+        label.configure(text=f'r{i:02}: 0x{value:08x}')
+        label.after(10, lambda label=label, i=i: self._reg_update_callback(label, i))
