@@ -6,7 +6,7 @@ if __name__ == "__main__":
     memory = Memory()
     loader = Loader()
 
-    event = Event(EventType.LOAD_DATA_TO_MEMORY, "home/test1.bin")
+    event = Event(EventType.LOADER_LOAD_DATA, "home/test1.bin")
 
     loader.activate()
     

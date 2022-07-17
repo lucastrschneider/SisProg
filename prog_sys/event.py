@@ -2,7 +2,9 @@ from enum import Enum
 
 class EventType(Enum):
     INVALID_EVENT = 0
-    LOAD_DATA_TO_MEMORY = 1
+    LOADER_LOAD_DATA = 1
+    DUMPER_LOAD_DATA = 2
+    DUMPER_DUMP_DATA = 3
 
 class Event():
     def __init__(self, event_type: EventType, event_data):
