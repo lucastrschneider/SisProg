@@ -23,6 +23,10 @@ class EventMotor():
             return True
 
         return False
+    
+    def reset(self):
+        while(not(self._events_queue.empty)):
+            self._events_queue.get_nowait()
 
     def run(self) -> bool:
         if self._active:
