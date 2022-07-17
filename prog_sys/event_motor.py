@@ -29,7 +29,7 @@ class EventMotor():
             if not self._events_queue.empty():
                 event = self._events_queue.get(block=False)
                 reaction = self._events_reactions[event.get_type()]
-                if reaction is callable:
+                if callable(reaction):
                     reaction(event)
                     return True
 
