@@ -70,6 +70,8 @@ class ProgSysGUI:
         state_indicators_title_label.grid(row=1, column=4, columnspan=2, sticky="NSEW")
         
         # Create memory
+        self.mem_base_add = 0
+
         state_mem_title_label = tk.Label(self.tk_gui,
             text='Memória',
             fg=fg_color,
@@ -79,12 +81,11 @@ class ProgSysGUI:
         )
         state_mem_title_label.grid(row=1, column=6, columnspan=4, sticky="NSEW")
 
-        self.state_mem_add_button = tk.Button(self.tk_gui,
+        state_mem_add_button = tk.Button(self.tk_gui,
             text='\N{RIGHTWARDS BLACK ARROW}',
-            width=1,
-            height=1,
+            command=self._mem_address_update_callback
         )
-        self.state_mem_add_button.grid(row=2, column=9, padx=10, pady=10, sticky="W")
+        state_mem_add_button.grid(row=2, column=9, padx=10, pady=10, sticky="W")
         
         mem_add_label = tk.Label(self.tk_gui,
             text='Endereço Memória:',
@@ -100,19 +101,18 @@ class ProgSysGUI:
         )
         self.mem_add_entry.grid(row=2, column=7, columnspan=2, padx=10, pady=10, sticky="NSEW")
 
-        self.state_mem_vars = []
+        self.mem_add_entry.insert(0, "000")
+
         for i in range(14):
-            mem_string_var = tk.StringVar()
-            mem_string_var.set(f'0x{i:03x}: 0x00000000')
             label = tk.Label(self.tk_gui,
-                textvariable=mem_string_var,
+                text=f'0x{i:03x}: 0x00000000',
                 fg=fg_color,
                 bg=bg_color,
                 justify='left',
                 font=("TkDefaultFont", 10, "normal")
             )
             label.grid(row= i % 7 + 3, column= 2* (i // 7) + 6, columnspan=2, sticky="NSEW")
-            self.state_mem_vars.append(mem_string_var)
+            label.after(10, lambda label=label, i=i: self._mem_update_callback(label, i))
 
         # Create commands indicator
         state_title_label = tk.Label(self.tk_gui,
@@ -230,3 +230,15 @@ class ProgSysGUI:
         value = self._reg_file[i];
         label.configure(text=f'r{i:02}: 0x{value:08x}')
         label.after(10, lambda label=label, i=i: self._reg_update_callback(label, i))
+
+    def _mem_update_callback(self, label, i):
+        address = self.mem_base_add + i
+        value = self._memory[address];
+        label.configure(text=f'0x{address:03x}: 0x{value:08x}')
+        label.after(10, lambda label=label, i=i: self._mem_update_callback(label, i))
+
+    def _mem_address_update_callback(self):
+        try:
+            self.mem_base_add = int(self.mem_add_entry.get(), base=16)
+        except:
+            pass
