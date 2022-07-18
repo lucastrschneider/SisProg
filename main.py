@@ -31,6 +31,11 @@ if __name__ == "__main__":
         {"file": "home/test2.bin", "start_address": 15, "size": 12},
     )
 
+    dump_event = Event(
+        EventType.DUMPER_LOAD_DATA,
+        {"file": "home/test2.bin", "start_address": 15, "size": 12},
+    )
+
     status = dumper.add_event(dump_event)
     status = dumper.run()
     status = dumper.run()
