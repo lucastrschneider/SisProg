@@ -65,3 +65,16 @@ if __name__ == "__main__":
     assemble_line_event = Event(EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "B 36")
     status = absolute_assembler.add_event(assemble_line_event)
     status = absolute_assembler.run()
+
+    assemble_line_event = Event(
+        EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "B UNKNOWNFUNC"
+    )
+    status = absolute_assembler.add_event(assemble_line_event)
+    status = absolute_assembler.run()
+
+    absolute_assembler.symbol_table["firstfunc"] = 36
+    assemble_line_event = Event(
+        EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "B FIRSTFUNC"
+    )
+    status = absolute_assembler.add_event(assemble_line_event)
+    status = absolute_assembler.run()

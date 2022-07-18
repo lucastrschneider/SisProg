@@ -201,8 +201,17 @@ class AbsoluteAssembler(EventMotor):
         return self.patterns["label"].match(line).groups()[0]
 
     def _justify_address(self, address: str, target_len):
-        # Convert address from decimal to binary and get string
-        bin_address = str(bin(int(address))).strip("0b")
+        # Check if address is absolute
+        if address.isnumeric():
+            # Convert address from decimal to binary and get string
+            bin_address = str(bin(int(address))).strip("0b")
+        # If address is relative (label)
+        else:
+            if address in self.symbol_table:
+                bin_address = str(bin(int(self.symbol_table[address]))).strip("0b")
+            else:
+                bin_address = "?" * target_len
+
         # Add zeros to the left
         justified_address = "0" * (target_len - len(bin_address)) + bin_address
         return justified_address
