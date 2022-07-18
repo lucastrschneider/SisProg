@@ -2,7 +2,15 @@ from .event import Event, EventType
 from .event_motor import EventMotor
 from .memory import Memory
 from .reg_file import RegFile
+from .indicator import Indicator
+from enum import Enum
 import numpy as np
+
+class VMState(Enum):
+    STOPPED = 0
+    READY = 1
+    RUNNING = 2
+    STEPPING = 3
 
 class InstructionSimulator(EventMotor):
     def __init__(self):
@@ -13,6 +21,8 @@ class InstructionSimulator(EventMotor):
         self._reg_file.reset()
         self._program_counter = 0
         self._instruction = '00000000000000000000000000000000'
+        self._state = VMState.STOPPED
+        Indicator().set_indicator_string("Parada")
 
         self._events_reactions[EventType.VM_START] = self._start_reaction
         self._events_reactions[EventType.FETCH_DECODE_EXECUTE_STEP] = self._fetch_decode_execute_step_reaction
@@ -24,21 +34,35 @@ class InstructionSimulator(EventMotor):
         print("start execution")
         self._reg_file.reset()
         self._program_counter = event.get_data()
+        self._state = VMState.READY
+        Indicator().set_indicator_string("Preparada")
 
     def _fetch_decode_execute_step_reaction(self, event: Event):
-        self.fetch_decode_execute()
+        if not self._state == VMState.STOPPED:
+            self._state = VMState.STEPPING
+            Indicator().set_indicator_string("Passos")
+            self.fetch_decode_execute()
 
+            is_to_stop = self._instruction[0:11] == '11111111111' # stop condition
+            if is_to_stop:
+                self.add_event(Event(EventType.VM_FINISH, ""))
 
     def _fetch_decode_execute_continuosly_reaction(self, event: Event):
-        self.fetch_decode_execute()
-        is_to_stop = self._instruction[0:11] == '11111111111' # stop condition
-        if is_to_stop:
-            self.add_event(Event(EventType.VM_FINISH, ""))
-        else:
-            self.add_event(Event(EventType.FETCH_DECODE_EXECUTE_CONTINUOSLY, ""))
+        if not self._state == VMState.STOPPED:
+            self._state = VMState.RUNNING
+            Indicator().set_indicator_string("Executando")
+
+            self.fetch_decode_execute()
+            is_to_stop = self._instruction[0:11] == '11111111111' # stop condition
+            if is_to_stop:
+                self.add_event(Event(EventType.VM_FINISH, ""))
+            else:
+                self.add_event(Event(EventType.FETCH_DECODE_EXECUTE_CONTINUOSLY, ""))
     
     def _finish_reaction(self, event: Event):
         print("end execution")
+        self._state = VMState.STOPPED
+        Indicator().set_indicator_string("Parada")
         self.reset()
 
 

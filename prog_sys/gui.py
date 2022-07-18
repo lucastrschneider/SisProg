@@ -1,8 +1,11 @@
 import tkinter as tk
+
+from prog_sys.indicator import Indicator
 from .event import EventType, Event
 from .event_controller import EventController
 from .reg_file import RegFile
 from .memory import Memory
+from .indicator import Indicator
 
 NUM_OF_ROWS = 14
 NUM_OF_COLUMNS = 10
@@ -74,6 +77,26 @@ class ProgSysGUI:
         )
         state_indicators_title_label.grid(row=1, column=4, columnspan=2, sticky="NSEW")
         
+        state_indicators_title_label = tk.Label(self.tk_gui,
+            text='Estado da máquina:',
+            fg=fg_color,
+            bg=bg_color,
+            justify='center',
+            font=("TkDefaultFont", 10, "normal")
+        )
+        state_indicators_title_label.grid(row=3, column=4, columnspan=2, sticky="NSEW")
+        
+        state_indicator_label = tk.Label(self.tk_gui,
+            text=Indicator().get_indicator_string(),
+            fg=fg_color,
+            bg=bg_color,
+            justify='center',
+            font=("TkDefaultFont", 10, "normal")
+        )
+        state_indicator_label.grid(row=4, column=4, columnspan=2, sticky="NSEW")
+        
+        state_indicator_label.after(10, lambda label=state_indicator_label: self._indicator_update_callback(label))
+
         # Create memory
         self.mem_base_add = 0
 
@@ -230,6 +253,10 @@ class ProgSysGUI:
         value = self._reg_file[i];
         label.configure(text=f'r{i:02}: 0x{value:08x}')
         label.after(10, lambda label=label, i=i: self._reg_update_callback(label, i))
+
+    def _indicator_update_callback(self, label):
+        label.configure(text=Indicator().get_indicator_string())
+        label.after(10, lambda label=label: self._indicator_update_callback(label))
 
     def _mem_update_callback(self, label, i):
         address = self.mem_base_add + i
