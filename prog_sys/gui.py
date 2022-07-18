@@ -96,6 +96,26 @@ class ProgSysGUI:
         state_indicator_label.grid(row=4, column=4, columnspan=2, sticky="NSEW")
         
         state_indicator_label.after(10, lambda label=state_indicator_label: self._indicator_update_callback(label))
+        
+        pc_indicators_title_label = tk.Label(self.tk_gui,
+            text='Próximo PC:',
+            fg=fg_color,
+            bg=bg_color,
+            justify='center',
+            font=("TkDefaultFont", 10, "normal")
+        )
+        pc_indicators_title_label.grid(row=6, column=4, columnspan=2, sticky="NSEW")
+        
+        pc_indicator_label = tk.Label(self.tk_gui,
+            text=f'0x{Indicator().get_pc():03x}',
+            fg=fg_color,
+            bg=bg_color,
+            justify='center',
+            font=("TkDefaultFont", 10, "normal")
+        )
+        pc_indicator_label.grid(row=7, column=4, columnspan=2, sticky="NSEW")
+        
+        pc_indicator_label.after(10, lambda label=pc_indicator_label: self._pc_update_callback(label))
 
         # Create memory
         self.mem_base_add = 0
@@ -257,6 +277,10 @@ class ProgSysGUI:
     def _indicator_update_callback(self, label):
         label.configure(text=Indicator().get_indicator_string())
         label.after(10, lambda label=label: self._indicator_update_callback(label))
+
+    def _pc_update_callback(self, label):
+        label.configure(text=f'0x{Indicator().get_pc():03x}')
+        label.after(10, lambda label=label: self._pc_update_callback(label))
 
     def _mem_update_callback(self, label, i):
         address = self.mem_base_add + i

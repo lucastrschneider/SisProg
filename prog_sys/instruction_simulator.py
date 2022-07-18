@@ -36,12 +36,15 @@ class InstructionSimulator(EventMotor):
         self._program_counter = event.get_data()
         self._state = VMState.READY
         Indicator().set_indicator_string("Preparada")
+        Indicator().set_pc(self._program_counter)
 
     def _fetch_decode_execute_step_reaction(self, event: Event):
         if not self._state == VMState.STOPPED:
             self._state = VMState.STEPPING
             Indicator().set_indicator_string("Passos")
+            
             self.fetch_decode_execute()
+            Indicator().set_pc(self._program_counter)
 
             is_to_stop = self._instruction[0:11] == '11111111111' # stop condition
             if is_to_stop:
@@ -53,6 +56,8 @@ class InstructionSimulator(EventMotor):
             Indicator().set_indicator_string("Executando")
 
             self.fetch_decode_execute()
+            Indicator().set_pc(self._program_counter)
+
             is_to_stop = self._instruction[0:11] == '11111111111' # stop condition
             if is_to_stop:
                 self.add_event(Event(EventType.VM_FINISH, ""))
