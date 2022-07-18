@@ -5,18 +5,25 @@ from .reg_file import RegFile
 import numpy as np
 
 class InstructionSimulator(EventMotor):
-    def __init__(self,  program_index):
+    def __init__(self):
         super().__init__()
 
         self._memory = Memory()
         self._reg_file = RegFile()
         self._reg_file.reset()
-        self._program_counter =  program_index
+        self._program_counter = 0
         self._instruction = '00000000000000000000000000000000'
+
+        self._events_reactions[EventType.VM_START] = self._start_reaction
         self._events_reactions[EventType.FETCH_DECODE_EXECUTE_STEP] = self._fetch_decode_execute_step_reaction
         self._events_reactions[EventType.FETCH_DECODE_EXECUTE_CONTINUOSLY] = self._fetch_decode_execute_continuosly_reaction
-        self._events_reactions[EventType.FINISH] = self._finish_reaction
+        self._events_reactions[EventType.VM_FINISH] = self._finish_reaction
 
+
+    def _start_reaction(self, event: Event):
+        print("start execution")
+        self._reg_file.reset()
+        self._program_counter = event.get_data()
 
     def _fetch_decode_execute_step_reaction(self, event: Event):
         self.fetch_decode_execute()
@@ -26,7 +33,7 @@ class InstructionSimulator(EventMotor):
         self.fetch_decode_execute()
         is_to_stop = self._instruction[0:11] == '11111111111' # stop condition
         if is_to_stop:
-            self.add_event(Event(EventType.FINISH, ""))
+            self.add_event(Event(EventType.VM_FINISH, ""))
         else:
             self.add_event(Event(EventType.FETCH_DECODE_EXECUTE_CONTINUOSLY, ""))
     

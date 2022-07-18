@@ -10,7 +10,7 @@ if __name__ == "__main__":
     reg_file = RegFile()
     loader = Loader()
     dumper = Dumper()
-    vm = InstructionSimulator(48)
+    vm = InstructionSimulator()
 
     loader.activate()
     dumper.activate()
@@ -19,14 +19,16 @@ if __name__ == "__main__":
     load_event1 = Event(EventType.LOADER_LOAD_DATA, "home/test1.bin")
     load_event2 = Event(EventType.LOADER_LOAD_DATA, "home/test3.bin")
 
-    vm_event = Event(EventType.FETCH_DECODE_EXECUTE_CONTINUOSLY, "")
+    vm_start_event = Event(EventType.VM_START, 48)
+    vm_ex_event = Event(EventType.FETCH_DECODE_EXECUTE_CONTINUOSLY, "")
 
     status = loader.add_event(load_event1)
     status = loader.add_event(load_event2)
     status = loader.run()
     status = loader.run()
-    status = vm.add_event(vm_event)
-    for i in range(6):
+    status = vm.add_event(vm_start_event)
+    status = vm.add_event(vm_ex_event)
+    for i in range(7):
         status = vm.run()
     reg_file.display()
 
