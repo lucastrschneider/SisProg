@@ -171,6 +171,8 @@ class ProgSysGUI:
         )
         self.vm_start_entry.grid(row=11, column=6, columnspan=2, padx=10, pady=10, sticky="NSEW")
 
+        self.vm_start_entry.insert(0, "000")
+
         vm_start_button = tk.Button(self.tk_gui,
             text='Iniciar',
             command=self._vm_start_callback
@@ -254,16 +256,25 @@ class ProgSysGUI:
         DumperPopup()
 
     def _vm_start_callback(self):
-        pass
+        instruction_address = int(self.vm_start_entry.get(), base=16)
+        # TODO: update event type
+        start_event = Event(EventType.INVALID_EVENT, instruction_address)
+        EventController().add_event(start_event)
 
     def _vm_stop_callback(self):
-        pass
+        # TODO: update event type
+        stop_event = Event(EventType.INVALID_EVENT, None)
+        EventController().add_event(stop_event)
 
     def _vm_ex_callback(self):
-        pass
+        # TODO: update event type
+        ex_event = Event(EventType.INVALID_EVENT, None)
+        EventController().add_event(ex_event)
 
     def _vm_step_callback(self):
-        pass
+        # TODO: update event type
+        step_event = Event(EventType.INVALID_EVENT, None)
+        EventController().add_event(step_event)
 
     def _abs_asm_callback(self):
         NotImplementedPopup()
