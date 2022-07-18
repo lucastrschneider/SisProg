@@ -1,4 +1,5 @@
 import re
+import os
 
 from .event import Event, EventType
 from .event_motor import EventMotor
@@ -133,6 +134,9 @@ class AbsoluteAssembler(EventMotor):
                 mnemonic = self._extract_mnemonic(line)
                 if mnemonic in self.mnemonic_table:
                     self.location_counter += 4
+                    object_code = self._assemble_line_handler(line)
+                    with open("home/tmp.int", "a+") as intermediate_file:
+                        intermediate_file.write(object_code + "\n")
                 elif mnemonic == "word":
                     self.location_counter += 4
                 else:
@@ -150,7 +154,8 @@ class AbsoluteAssembler(EventMotor):
         return object_code
 
     def _end(self, event: Event):
-        print("end")
+        # Remove intermediate file
+        os.remove("home/tmp.int")
 
     def _assemble_line_handler(self, line: str):
         mnemonic = self._extract_mnemonic(line)

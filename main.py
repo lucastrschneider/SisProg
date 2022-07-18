@@ -40,41 +40,42 @@ if __name__ == "__main__":
     # status = dumper.run()
     # status = dumper.run()
 
-    # assemble_event = Event(EventType.ABSOLUTE_ASSEMBLER_FIRST_PASS, "home/test.asm")
-    # status = absolute_assembler.add_event(assemble_event)
+    assemble_event = Event(EventType.ABSOLUTE_ASSEMBLER_FIRST_PASS, "home/test.asm")
+    status = absolute_assembler.add_event(assemble_event)
+    status = absolute_assembler.run()
+
+    # # Assemble line tests
+    # assemble_line_event = Event(
+    #     EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "ADD   X4, X1, X2"
+    # )
+    # status = absolute_assembler.add_event(assemble_line_event)
     # status = absolute_assembler.run()
 
-    assemble_line_event = Event(
-        EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "ADD   X4, X1, X2"
-    )
-    status = absolute_assembler.add_event(assemble_line_event)
-    status = absolute_assembler.run()
+    # assemble_line_event = Event(
+    #     EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "LDUR  X1, [X3 + 0]"
+    # )
+    # status = absolute_assembler.add_event(assemble_line_event)
+    # status = absolute_assembler.run()
 
-    assemble_line_event = Event(
-        EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "LDUR  X1, [X3 + 0]"
-    )
-    status = absolute_assembler.add_event(assemble_line_event)
-    status = absolute_assembler.run()
+    # assemble_line_event = Event(
+    #     EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "CBZ X1, 36"
+    # )
+    # status = absolute_assembler.add_event(assemble_line_event)
+    # status = absolute_assembler.run()
 
-    assemble_line_event = Event(
-        EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "CBZ X1, 36"
-    )
-    status = absolute_assembler.add_event(assemble_line_event)
-    status = absolute_assembler.run()
+    # assemble_line_event = Event(EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "B 36")
+    # status = absolute_assembler.add_event(assemble_line_event)
+    # status = absolute_assembler.run()
 
-    assemble_line_event = Event(EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "B 36")
-    status = absolute_assembler.add_event(assemble_line_event)
-    status = absolute_assembler.run()
+    # assemble_line_event = Event(
+    #     EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "B UNKNOWNFUNC"
+    # )
+    # status = absolute_assembler.add_event(assemble_line_event)
+    # status = absolute_assembler.run()
 
-    assemble_line_event = Event(
-        EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "B UNKNOWNFUNC"
-    )
-    status = absolute_assembler.add_event(assemble_line_event)
-    status = absolute_assembler.run()
-
-    absolute_assembler.symbol_table["firstfunc"] = 36
-    assemble_line_event = Event(
-        EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "B FIRSTFUNC"
-    )
-    status = absolute_assembler.add_event(assemble_line_event)
-    status = absolute_assembler.run()
+    # absolute_assembler.symbol_table["firstfunc"] = 36
+    # assemble_line_event = Event(
+    #     EventType.ABSOLUTE_ASSEMBLER_ASSEMBLE_LINE, "B FIRSTFUNC"
+    # )
+    # status = absolute_assembler.add_event(assemble_line_event)
+    # status = absolute_assembler.run()
