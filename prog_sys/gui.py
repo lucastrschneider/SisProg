@@ -251,7 +251,7 @@ class ProgSysGUI:
         LoaderPopup()
 
     def _dumper_callback(self):
-        NotImplementedPopup()
+        DumperPopup()
 
     def _vm_start_callback(self):
         pass
@@ -305,6 +305,76 @@ class LoaderPopup():
 
     def _button_callback(self):
         load_event = Event(EventType.LOADER_LOAD_DATA, "home/" + self.entry.get())
+        EventController().add_event(load_event)
+        self.gui.destroy()
+
+class DumperPopup():
+    def __init__(self):
+        self.gui = tk.Toplevel()
+
+        bg_color = "#434344"
+        fg_color = "#FFFFFF"
+
+        self.gui.title("Dumper")
+        self.gui.configure(background=bg_color)
+        self.gui.geometry("550x200")
+        self.gui.resizable(width=False, height=False)
+        center(self.gui)
+
+        for i in range(4):
+            self.gui.rowconfigure(i, weight=1)
+
+        for i in range(2):
+            self.gui.columnconfigure(i, weight=1)
+
+        # File where to dumb
+        label = tk.Label(self.gui,
+            text="Arquivo onde salvar dados da memória (file.bin)",
+            fg=fg_color,
+            bg=bg_color,
+        )
+        label.grid(row=0, column=0, padx=10, pady=5, sticky="EW")
+
+        self.file_entry = tk.Entry(self.gui,
+            width=20
+        )
+        self.file_entry.grid(row=0, column=1, padx=10, pady=5, sticky="EW")
+
+        # Start address
+        label = tk.Label(self.gui,
+            text="Endereço inicial da memória (hexadecimal)",
+            fg=fg_color,
+            bg=bg_color,
+        )
+        label.grid(row=1, column=0, padx=10, pady=5, sticky="EW")
+
+        self.address_entry = tk.Entry(self.gui,
+            width=20
+        )
+        self.address_entry.grid(row=1, column=1, padx=10, pady=5, sticky="EW")
+
+        # Number of words to dump
+        label = tk.Label(self.gui,
+            text="Número de palavras (decimal)",
+            fg=fg_color,
+            bg=bg_color,
+        )
+        label.grid(row=2, column=0, padx=10, pady=5, sticky="EW")
+
+        self.size_entry = tk.Entry(self.gui,
+            width=20
+        )
+        self.size_entry.grid(row=2, column=1, padx=10, pady=5, sticky="EW")
+
+        button = tk.Button(self.gui, text="Dump", command=self._button_callback)
+        button.grid(row=3, column=0, columnspan=2, padx=10, pady=10, sticky="EW")
+
+    def _button_callback(self):
+        data = {}
+        data['file'] = "home/" + self.file_entry.get()
+        data['start_address'] = int(self.address_entry.get(), base=16)
+        data['size'] = int(self.size_entry.get())
+        load_event = Event(EventType.DUMPER_LOAD_DATA, data)
         EventController().add_event(load_event)
         self.gui.destroy()
 
