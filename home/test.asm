@@ -1,0 +1,5 @@
+START      0
+LDUR  X1, [X3 + 0]
+LDUR  X2, [X3 + 1]
+FISRTFUNC: ADD   X4, X1, X2
+END

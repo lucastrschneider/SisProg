@@ -1,3 +1,4 @@
+from prog_sys.absolute_assembler import AbsoluteAssembler
 from prog_sys.event import Event, EventType
 from prog_sys.memory import Memory
 from prog_sys.loader import Loader
@@ -7,9 +8,11 @@ if __name__ == "__main__":
     memory = Memory()
     loader = Loader()
     dumper = Dumper()
+    absolute_assembler = AbsoluteAssembler()
 
     loader.activate()
     dumper.activate()
+    absolute_assembler.activate()
 
     load_event = Event(EventType.LOADER_LOAD_DATA, "home/test1.bin")
     status = loader.add_event(load_event)
@@ -21,7 +24,11 @@ if __name__ == "__main__":
                 "start_address": 15,
                 "size": 12 }
         )
-    
+
     status = dumper.add_event(dump_event)
     status = dumper.run()
     status = dumper.run()
+
+    assemble_event = Event(EventType.ABSOLUTE_ASSEMBLER_FIRST_PASS, "home/test.asm")
+    status = absolute_assembler.add_event(assemble_event)
+    status = absolute_assembler.run()
