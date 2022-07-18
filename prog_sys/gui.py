@@ -257,23 +257,19 @@ class ProgSysGUI:
 
     def _vm_start_callback(self):
         instruction_address = int(self.vm_start_entry.get(), base=16)
-        # TODO: update event type
-        start_event = Event(EventType.INVALID_EVENT, instruction_address)
+        start_event = Event(EventType.VM_START, instruction_address)
         EventController().add_event(start_event)
 
     def _vm_stop_callback(self):
-        # TODO: update event type
-        stop_event = Event(EventType.INVALID_EVENT, None)
+        stop_event = Event(EventType.VM_FINISH, None)
         EventController().add_event(stop_event)
 
     def _vm_ex_callback(self):
-        # TODO: update event type
-        ex_event = Event(EventType.INVALID_EVENT, None)
+        ex_event = Event(EventType.FETCH_DECODE_EXECUTE_CONTINUOSLY, None)
         EventController().add_event(ex_event)
 
     def _vm_step_callback(self):
-        # TODO: update event type
-        step_event = Event(EventType.INVALID_EVENT, None)
+        step_event = Event(EventType.FETCH_DECODE_EXECUTE_STEP, None)
         EventController().add_event(step_event)
 
     def _abs_asm_callback(self):
