@@ -24,6 +24,7 @@ class ProgSysGUI:
         self.tk_gui.configure(background=bg_color)
         self.tk_gui.geometry("940x480")
         self.tk_gui.resizable(width=False, height=False)
+        center(self.tk_gui)
 
         for i in range(NUM_OF_ROWS):
             self.tk_gui.rowconfigure(i, weight=1)
@@ -132,15 +133,13 @@ class ProgSysGUI:
         # Create and edit file
         create_file_button = tk.Button(self.tk_gui,
             text='Create File',
-            width=1,
-            height=1,
+            command=self._create_file_callback
         )
         create_file_button.grid(row=11, column=0, columnspan=2, padx=10, pady=10, sticky="NSEW")
         
         edit_file_button = tk.Button(self.tk_gui,
             text='Edit File',
-            width=1,
-            height=1,
+            command=self._edit_file_callback
         )
         edit_file_button.grid(row=12, column=0, columnspan=2, padx=10, pady=10, sticky="NSEW")
 
@@ -153,14 +152,13 @@ class ProgSysGUI:
         
         dump_button = tk.Button(self.tk_gui,
             text='Dumper',
-            width=1,
-            height=1,
+            command=self._dumper_callback
         )
         dump_button.grid(row=12, column=2, columnspan=2, padx=10, pady=10, sticky="NSEW")
 
         # Máquina virtual
         vm_add_label = tk.Label(self.tk_gui,
-            text='Endereço Instrução:',
+            text='Endereço da instrução:',
             fg=fg_color,
             bg=bg_color,
             justify='right',
@@ -175,51 +173,44 @@ class ProgSysGUI:
 
         vm_start_button = tk.Button(self.tk_gui,
             text='Iniciar',
-            width=1,
-            height=1,
+            command=self._vm_start_callback
         )
         vm_start_button.grid(row=12, column=4, columnspan=2, padx=10, pady=10, sticky="NSEW")
         
-        vm_end_button = tk.Button(self.tk_gui,
-            text='Encerrar',
-            width=1,
-            height=1,
+        vm_stop_button = tk.Button(self.tk_gui,
+            text='Parar',
+            command=self._vm_stop_callback
         )
-        vm_end_button.grid(row=12, column=6, columnspan=2, padx=10, pady=10, sticky="NSEW")
+        vm_stop_button.grid(row=12, column=6, columnspan=2, padx=10, pady=10, sticky="NSEW")
 
         vm_ex_button = tk.Button(self.tk_gui,
             text='Executar',
-            width=1,
-            height=1,
+            command=self._vm_ex_callback
         )
         vm_ex_button.grid(row=13, column=4, columnspan=2, padx=10, pady=10, sticky="NSEW")
 
         vm_step_button = tk.Button(self.tk_gui,
             text='Step',
-            width=1,
-            height=1,
+            command=self._vm_step_callback
         )
         vm_step_button.grid(row=13, column=6, columnspan=2, padx=10, pady=10, sticky="NSEW")
         
         # Assembler
         abs_asm_button = tk.Button(self.tk_gui,
             text='Montador Absoluto',
-            width=1,
-            height=1,
+            command=self._abs_asm_callback
         )
         abs_asm_button.grid(row=11, column=8, columnspan=2, padx=10, pady=10, sticky="NSEW")
         
         rel_asm_button = tk.Button(self.tk_gui,
             text='Montador Relativo',
-            width=1,
-            height=1,
+            command=self._rel_asm_callback
         )
         rel_asm_button.grid(row=12, column=8, columnspan=2, padx=10, pady=10, sticky="NSEW")
         
         linker_button = tk.Button(self.tk_gui,
             text='Ligador Relocador',
-            width=1,
-            height=1,
+            command=self._linker_callback
         )
         linker_button.grid(row=13, column=8, columnspan=2, padx=10, pady=10, sticky="NSEW")
 
@@ -250,7 +241,110 @@ class ProgSysGUI:
         except:
             pass
 
+    def _create_file_callback(self):
+        NotImplementedPopup()
+
+    def _edit_file_callback(self):
+        NotImplementedPopup()
+
     def _loader_callback(self):
-        load_event = Event(EventType.LOADER_LOAD_DATA, "home/test1.bin")
+        LoaderPopup()
+
+    def _dumper_callback(self):
+        NotImplementedPopup()
+
+    def _vm_start_callback(self):
+        pass
+
+    def _vm_stop_callback(self):
+        pass
+
+    def _vm_ex_callback(self):
+        pass
+
+    def _vm_step_callback(self):
+        pass
+
+    def _abs_asm_callback(self):
+        NotImplementedPopup()
+
+    def _rel_asm_callback(self):
+        NotImplementedPopup()
+
+    def _linker_callback(self):
+        NotImplementedPopup()
+    
+
+class LoaderPopup():
+    def __init__(self):
+        self.gui = tk.Toplevel()
+
+        bg_color = "#434344"
+        fg_color = "#FFFFFF"
+
+        self.gui.title("Loader")
+        self.gui.configure(background=bg_color)
+        self.gui.geometry("250x140")
+        self.gui.resizable(width=False, height=False)
+        center(self.gui)
+
+        label = tk.Label(self.gui,
+            text="Arquivo executável para\ncarregar (.bin)",
+            fg=fg_color,
+            bg=bg_color,
+        )
+        label.pack(fill='x', padx=10, pady=5)
+
+        self.entry = tk.Entry(self.gui,
+            width=5
+        )
+        self.entry.pack(fill='x', padx=10, pady=5)
+
+        button = tk.Button(self.gui, text="Load", command=self._button_callback)
+        button.pack(fill='x', padx=10, pady=10)
+
+    def _button_callback(self):
+        load_event = Event(EventType.LOADER_LOAD_DATA, "home/" + self.entry.get())
         EventController().add_event(load_event)
-        
+        self.gui.destroy()
+
+class NotImplementedPopup():
+    def __init__(self):
+        self.gui = tk.Toplevel()
+
+        bg_color = "#434344"
+        fg_color = "#FFFFFF"
+
+        self.gui.title("Erro")
+        self.gui.configure(background=bg_color)
+        self.gui.geometry("250x100")
+        self.gui.resizable(width=False, height=False)
+        center(self.gui)
+
+        label = tk.Label(self.gui,
+            text="Esse recurso ainda não\nfoi implementado :(",
+            fg=fg_color,
+            bg=bg_color,
+        )
+        label.pack(fill='x', padx=10, pady=5)
+
+        button = tk.Button(self.gui, text="Fechar", command=self.gui.destroy)
+        button.pack(fill='x', padx=10, pady=10)
+
+
+def center(win):
+    """
+    centers a tkinter window
+    :param win: the main window or Toplevel window to center
+    """
+    win.update_idletasks()
+    width = win.winfo_width()
+    frm_width = win.winfo_rootx() - win.winfo_x()
+    win_width = width + 2 * frm_width
+    height = win.winfo_height()
+    titlebar_height = win.winfo_rooty() - win.winfo_y()
+    win_height = height + titlebar_height + frm_width
+    x = win.winfo_screenwidth() // 2 - win_width // 2
+    y = win.winfo_screenheight() // 2 - win_height // 2
+    win.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+    win.deiconify()
