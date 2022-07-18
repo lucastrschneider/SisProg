@@ -60,20 +60,20 @@ class InstructionSimulator(EventMotor):
             rt_value = self._reg_file.__getitem__(rt_address)
             self._memory.__setitem__(address+rn_value, rt_value)
         
-        elif self._instruction[31:24] == '10110100': #CBZ 
-            address = int(self._instruction[23:5], base = 2)
-            rt_address = int(self._instruction[4:0], base = 2)
+        elif self._instruction[0:8] == '10110100': #CBZ 
+            address = int(self._instruction[8:27], base = 2)
+            rt_address = int(self._instruction[27:32], base = 2)
             rt_value = self._reg_file.__getitem__(rt_address)
             if rt_value == 0:
                 self._program_counter += address
         
-        elif self._instruction[31:26] == '000101': #B
-            address = int(self._instruction[25:0], base = 2)
+        elif self._instruction[0:6] == '000101': #B
+            address = int(self._instruction[6:32], base = 2)
             self._program_counter += address
 
-        elif self._instruction[31:26] == '100101': #BL
+        elif self._instruction[0:6] == '100101': #BL
             self._reg_file.__setitem__(1,self._program_counter + 1)
-            address = int(self._instruction[25:0], base = 2)
+            address = int(self._instruction[6:32], base = 2)
             self._program_counter += address
         
         elif self._instruction[0:11] == '10001011000': #ADD
@@ -84,22 +84,22 @@ class InstructionSimulator(EventMotor):
             self._reg_file.__setitem__(rd_address, rn_value + rm_value)
 
 
-        elif self._instruction[31:21] == '11001011000': #SUB
-            rn_value = self._reg_file.__getitem__(int(self._instruction[9:5], base = 2))
-            rm_value = self._reg_file.__getitem__(int(self._instruction[20:16], base = 2))
-            rd_address = self._instruction[4:0]
+        elif self._instruction[0:11] == '11001011000': #SUB
+            rn_value = self._reg_file.__getitem__(int(self._instruction[22:27], base = 2))
+            rm_value = self._reg_file.__getitem__(int(self._instruction[11:16], base = 2))
+            rd_address = self._instruction[27:32]
             self._reg_file.__setitem__(rd_address, rn_value - rm_value)
         
-        elif self._instruction[31:21] == '10001010000': #AND
-            rn_value = self._reg_file.__getitem__(int(self._instruction[9:5], base = 2))
-            rm_value = self._reg_file.__getitem__(int(self._instruction[20:16], base = 2))
-            rd_address = self._instruction[4:0]
+        elif self._instruction[0:11] == '10001010000': #AND
+            rn_value = self._reg_file.__getitem__(int(self._instruction[22:27], base = 2))
+            rm_value = self._reg_file.__getitem__(int(self._instruction[11:16], base = 2))
+            rd_address = self._instruction[27:32]
             self._reg_file.__setitem__(rd_address, rn_value & rm_value)
         
-        elif self._instruction[31:21] == '10101010000': #ORR
-            rn_value = self._reg_file.__getitem__(int(self._instruction[9:5], base = 2))
-            rm_value = self._reg_file.__getitem__(int(self._instruction[20:16], base = 2))
-            rd_address = self._instruction[4:0]
+        elif self._instruction[0:11] == '10101010000': #ORR
+            rn_value = self._reg_file.__getitem__(int(self._instruction[22:27], base = 2))
+            rm_value = self._reg_file.__getitem__(int(self._instruction[11:16], base = 2))
+            rd_address = self._instruction[27:32]
             self._reg_file.__setitem__(rd_address, rn_value | rm_value)
 
 
