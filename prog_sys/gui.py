@@ -1,4 +1,6 @@
 import tkinter as tk
+from .event import EventType, Event
+from .event_controller import EventController
 from .reg_file import RegFile
 from .memory import Memory
 
@@ -12,6 +14,8 @@ class ProgSysGUI:
 
         # Create the main window
         self.tk_gui = tk.Tk()
+
+        self.tk_gui.after(0, self._main_callback)
 
         bg_color = "#434344"
         fg_color = "#FFFFFF"
@@ -143,8 +147,7 @@ class ProgSysGUI:
         # Load and dump
         load_button = tk.Button(self.tk_gui,
             text='Loader',
-            width=1,
-            height=1,
+            command=self._loader_callback
         )
         load_button.grid(row=11, column=2, columnspan=2, padx=10, pady=10, sticky="NSEW")
         
@@ -226,6 +229,10 @@ class ProgSysGUI:
     def stop(self) -> None:
         self.tk_gui.destroy()
 
+    def _main_callback(self):
+        EventController().run()
+        self.tk_gui.after(10, self._main_callback)
+
     def _reg_update_callback(self, label, i):
         value = self._reg_file[i];
         label.configure(text=f'r{i:02}: 0x{value:08x}')
@@ -242,3 +249,8 @@ class ProgSysGUI:
             self.mem_base_add = int(self.mem_add_entry.get(), base=16)
         except:
             pass
+
+    def _loader_callback(self):
+        load_event = Event(EventType.LOADER_LOAD_DATA, "home/test1.bin")
+        EventController().add_event(load_event)
+        
