@@ -17,4 +17,4 @@ class RegFile(metaclass=Singleton):
         self.array *= 0
 
     def display(self):
-        np.savetxt("image.txt", self.array, fmt='%08X')
+        np.savetxt("reg_display.txt", self.array, fmt='%08X')

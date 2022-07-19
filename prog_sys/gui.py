@@ -1,8 +1,11 @@
 import tkinter as tk
+
+from prog_sys.indicator import Indicator
 from .event import EventType, Event
 from .event_controller import EventController
 from .reg_file import RegFile
 from .memory import Memory
+from .indicator import Indicator
 
 NUM_OF_ROWS = 14
 NUM_OF_COLUMNS = 10
@@ -74,6 +77,46 @@ class ProgSysGUI:
         )
         state_indicators_title_label.grid(row=1, column=4, columnspan=2, sticky="NSEW")
         
+        state_indicators_title_label = tk.Label(self.tk_gui,
+            text='Estado da máquina:',
+            fg=fg_color,
+            bg=bg_color,
+            justify='center',
+            font=("TkDefaultFont", 10, "normal")
+        )
+        state_indicators_title_label.grid(row=3, column=4, columnspan=2, sticky="NSEW")
+        
+        state_indicator_label = tk.Label(self.tk_gui,
+            text=Indicator().get_indicator_string(),
+            fg=fg_color,
+            bg=bg_color,
+            justify='center',
+            font=("TkDefaultFont", 10, "normal")
+        )
+        state_indicator_label.grid(row=4, column=4, columnspan=2, sticky="NSEW")
+        
+        state_indicator_label.after(10, lambda label=state_indicator_label: self._indicator_update_callback(label))
+        
+        pc_indicators_title_label = tk.Label(self.tk_gui,
+            text='Próximo PC:',
+            fg=fg_color,
+            bg=bg_color,
+            justify='center',
+            font=("TkDefaultFont", 10, "normal")
+        )
+        pc_indicators_title_label.grid(row=6, column=4, columnspan=2, sticky="NSEW")
+        
+        pc_indicator_label = tk.Label(self.tk_gui,
+            text=f'0x{Indicator().get_pc():03x}',
+            fg=fg_color,
+            bg=bg_color,
+            justify='center',
+            font=("TkDefaultFont", 10, "normal")
+        )
+        pc_indicator_label.grid(row=7, column=4, columnspan=2, sticky="NSEW")
+        
+        pc_indicator_label.after(10, lambda label=pc_indicator_label: self._pc_update_callback(label))
+
         # Create memory
         self.mem_base_add = 0
 
@@ -231,6 +274,14 @@ class ProgSysGUI:
         label.configure(text=f'r{i:02}: 0x{value:08x}')
         label.after(10, lambda label=label, i=i: self._reg_update_callback(label, i))
 
+    def _indicator_update_callback(self, label):
+        label.configure(text=Indicator().get_indicator_string())
+        label.after(10, lambda label=label: self._indicator_update_callback(label))
+
+    def _pc_update_callback(self, label):
+        label.configure(text=f'0x{Indicator().get_pc():03x}')
+        label.after(10, lambda label=label: self._pc_update_callback(label))
+
     def _mem_update_callback(self, label, i):
         address = self.mem_base_add + i
         value = self._memory[address];
@@ -257,23 +308,19 @@ class ProgSysGUI:
 
     def _vm_start_callback(self):
         instruction_address = int(self.vm_start_entry.get(), base=16)
-        # TODO: update event type
-        start_event = Event(EventType.INVALID_EVENT, instruction_address)
+        start_event = Event(EventType.VM_START, instruction_address)
         EventController().add_event(start_event)
 
     def _vm_stop_callback(self):
-        # TODO: update event type
-        stop_event = Event(EventType.INVALID_EVENT, None)
+        stop_event = Event(EventType.VM_FINISH, None)
         EventController().add_event(stop_event)
 
     def _vm_ex_callback(self):
-        # TODO: update event type
-        ex_event = Event(EventType.INVALID_EVENT, None)
+        ex_event = Event(EventType.FETCH_DECODE_EXECUTE_CONTINUOSLY, None)
         EventController().add_event(ex_event)
 
     def _vm_step_callback(self):
-        # TODO: update event type
-        step_event = Event(EventType.INVALID_EVENT, None)
+        step_event = Event(EventType.FETCH_DECODE_EXECUTE_STEP, None)
         EventController().add_event(step_event)
 
     def _abs_asm_callback(self):
