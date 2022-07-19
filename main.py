@@ -4,6 +4,7 @@ from prog_sys.event import Event, EventType
 from prog_sys.memory import Memory
 from prog_sys.loader import Loader
 from prog_sys.dumper import Dumper
+from prog_sys.instruction_simulator import InstructionSimulator
 from prog_sys.gui import ProgSysGUI
 
 if __name__ == "__main__":
@@ -11,10 +12,7 @@ if __name__ == "__main__":
 
     event_controller.register_motor(Loader())
     event_controller.register_motor(Dumper())
-    memory = Memory()
-    loader = Loader()
-    dumper = Dumper()
-    absolute_assembler = AbsoluteAssembler()
+    event_controller.register_motor(InstructionSimulator())
 
     loader.activate()
     dumper.activate()
