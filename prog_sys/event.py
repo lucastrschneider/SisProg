@@ -16,7 +16,7 @@ class EventType(Enum):
     ABSOLUTE_ASSEMBLER_END = 11
 
 
-class Event:
+class Event():
     def __init__(self, event_type: EventType, event_data):
         self._type = event_type
         self._data = event_data
